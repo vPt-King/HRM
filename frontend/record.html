@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+        <div class="personal">
+            <div class="information">
+                <div class="name" id="name">Xin chào </div>
+                <div class="position" id="position"></div>
+            </div>
+            <div class="option">
+                <div class="homepage"><a href="homepage.html">Trang chủ</a></div>
+                <div class="record"><a href="record.html">Xem hồ sơ</a></div>
+                <div class="change_password"><a href="#">Thay đổi mật khẩu</a></div>
+                <div class="sign_out"><a href="login.html">Thoát</a></div>
+            </div>
+        </div>
+
+
+        <div class="show_record">
+            <div id="username">Họ và tên: </div>
+            <div id="dob">Ngày sinh: </div>
+            <div id="phone">Điện thoại: </div>
+            <div id="email">Email: </div>
+            <div id="certificate">Bằng cấp: </div>
+            <div id="onboard">Ngày vào làm việc: </div>
+            <div id="department">Phòng ban: </div>
+            <div id="management_name">Quản lí trực tiếp: </div>
+            <div id="pos">Vị trí: </div>
+        </div>
+    </div>
+</body>
+<script>
+    function record()
+    {
+        
+
+        let user = JSON.parse(localStorage.getItem('user'));
+        console.log(user)
+        document.getElementById('name').innerHTML += user.name;
+        document.getElementById('position').innerHTML += user.position_name;
+        document.getElementById('username').innerHTML += user.name;
+        document.getElementById('dob').innerHTML += user.dob;
+        document.getElementById('phone').innerHTML += user.phone;
+        document.getElementById('email').innerHTML += user.email;
+        document.getElementById('certificate').innerHTML += user.certificate;
+        document.getElementById('onboard').innerHTML += user.onboard;
+        document.getElementById('department').innerHTML += user.department_name;
+        document.getElementById('pos').innerHTML += user.position_name;
+        document.getElementById('management_name').innerHTML += user.management_name;
+        
+    }
+
+   
+    record()
+</script>
+<style>
+    .content{
+        margin-left: 150px;
+        margin-right: 150px; 
+    }
+    .content .personal{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #d9dddc;
+        padding-bottom: 10px;
+    }
+    .content .personal .option{
+        display: flex;
+        justify-content: space-between;
+        width: 300px;
+        align-items: center;
+    }
+
+    .content .personal .option div a{
+        text-decoration: none;
+        color:black;
+    }
+    .content .personal .option div a:hover{
+        color:blue;
+    }
+
+    .show_record{
+        margin-top: 50px;
+    }
+</style>
+</html>

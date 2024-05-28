@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="personal">
+            <div class="information">
+                <div class="name" id="name">Xin chào </div>
+                <div class="position" id="position"></div>
+            </div>
+            <div class="option">
+                <div class="homepage"><a href="homepage.html">Trang chủ</a></div>
+                <div class="record"><a href="record.html">Xem hồ sơ</a></div>
+                <div class="change_password"><a href="#">Thay đổi mật khẩu</a></div>
+                <div class="sign_out"><a href="login.html">Thoát</a></div>
+            </div>
+        </div>
+
+
+        <div class="register">
+            <form>
+                <div class="date">
+                    <label for="">Nhập ngày: </label>
+                    <input type="text" id="date">
+                </div>
+                <div class="work">
+                    <label for="">Loại công: </label>
+                    <select name="work" id="works">
+                        <option value="Nghỉ cả ngày">Nghỉ cả ngày</option>
+                        <option value="Làm việc tại nhà">Làm việc tại nhà</option>
+                        <option value="Nghỉ ca sáng">Nghỉ ca sáng</option>
+                        <option value="Nghỉ ca chiều">Nghỉ ca chiều</option>
+                    </select>
+                </div>
+                <div class="reason">
+                    <label for="">Lí do: </label>
+                    <input type="text" id="reason">
+                </div>
+            </form>
+            <button onclick="handleClick()">Đăng kí</button>
+        </div>
+    </div>
+</body>
+<script>
+    function homepage()
+    {
+        let user = JSON.parse(localStorage.getItem('user'));
+        document.getElementById('name').innerHTML += user.name;
+        document.getElementById('position').innerHTML += user.position_name;
+    }
+    function handleClick()
+    {
+        let user = JSON.parse(localStorage.getItem('user'));
+        console.log(user)
+        let date = document.getElementById("date").value;
+        let works = document.getElementById("works").value;
+        let reason = document.getElementById("reason").value;
+        let data = {
+            id_user:user.id,
+            date, works,reason
+        }
+        fetch('http://localhost:3000/api/register',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then((res) => {
+                alert(res)
+                // if(res == 'ok') {
+                //     localStorage.setItem("employees", '');
+                //     window.location.href='http://127.0.0.1:5500/frontend/employees.html'
+                // }
+                // else{
+                //     alert('Không thể thêm nhân viên')
+                // }
+            })
+    }
+    homepage()
+</script>
+<style>
+    .content{
+        margin-left: 150px;
+        margin-right: 150px; 
+    }
+    .content .personal{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #d9dddc;
+        padding-bottom: 10px;
+    }
+    .content .personal .option{
+        display: flex;
+        justify-content: space-between;
+        width: 400px;
+        align-items: center;
+    }
+
+    .content .personal .option div a{
+        text-decoration: none;
+        color:black;
+    }
+    .content .personal .option div a:hover{
+        color:blue;
+    }
+    .content .register{
+        margin-top: 20px;
+    }
+
+    .content .register form div{
+        margin: 20px;
+    }
+
+    .content .register form div label{
+        display: inline-block;
+        width: 150px;
+    }
+</style>
+</html>

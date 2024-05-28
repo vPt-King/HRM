@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="personal">
+            <div class="information">
+                <div class="name" id="name">Xin chào </div>
+                <div class="position" id="position"></div>
+            </div>
+            <div class="option">
+                <div class="homepage"><a href="homepage.html">Trang chủ</a></div>
+                <div class="record"><a href="record.html">Xem hồ sơ</a></div>
+                <div class="change_password"><a href="#">Thay đổi mật khẩu</a></div>
+                <div class="sign_out"><a href="login.html">Thoát</a></div>
+            </div>
+        </div>
+
+
+        <div class="function">
+            <div class="person" onclick="handleWork()">    
+                <a href="#">Chấm công</a>
+            </div>
+
+            <div class="register" onclick=""><a href="register.html">Đăng kí</a></div>
+
+            <div class="verify" id="verify_appoinment"><a href="verify.html">Phê duyệt</a></div>
+
+            <div class="work_table"><a href="tableCreatedWork.html">Bảng công</a></div>
+
+            <div class="salary"><a href="#">Phiếu lương</a></div>
+
+            <div class="employees"><a href="employees.html">Nhân viên</a></div>
+            
+            <div class="departments"><a href="#">Phòng ban</a></div>
+            <div class="" id="create_work"><a href="createWork.html">Tạo công</a></div>
+        </div>
+    </div>
+</body>
+<script>
+    function homepage()
+    {
+        let user = JSON.parse(localStorage.getItem('user'));
+        console.log(user)
+        document.getElementById('name').innerHTML += user.name;
+        document.getElementById('position').innerHTML += user.position_name;
+        if(user.department_id_user != user.id && user.department_id != "1" && user.department_id!="2")
+        {
+            
+            document.getElementById("create_work").style.display="none";
+            document.getElementById("verify_appoinment").style.display="none";
+        }
+    }
+    function handleWork()
+    {
+        const today = new Date();
+        const dd = today.getDate();
+        const mm = today.getMonth() + 1; // Thêm số 0 trước tháng bằng cách sử dụng padStart()
+        const yyyy = today.getFullYear();
+
+        const formattedDate = `${dd.toString().padStart(2, '0')}/${mm.toString().padStart(2, '0')}/${yyyy}`;
+        console.log(formattedDate); // In ra màn hình: 30/04/2024
+
+
+        let user = JSON.parse(localStorage.getItem('user'));
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const Time = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        data = {
+            id:user.id,
+            time:Time,
+            date: formattedDate
+        }
+        fetch('http://localhost:3000/api/handle-work',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+        .then((res) => {
+            return res.json()
+        })
+        .then(res => {
+            alert(res)
+        })
+    }
+    homepage()
+    function changeToMinutes(timeString){
+      
+      const timeArray = timeString.split(":");
+      const hours = parseInt(timeArray[0]);
+      const minutes = parseInt(timeArray[1]);
+      const totalMinutes = (hours * 60) + minutes;
+      return totalMinutes;
+    }
+
+    console.log(changeToMinutes("17:00")-changeToMinutes("08:00"))
+</script>
+<style>
+    .content{
+        margin-left: 150px;
+        margin-right: 150px; 
+    }
+    .content .personal{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #d9dddc;
+        padding-bottom: 10px;
+    }
+    .content .personal .option{
+        display: flex;
+        justify-content: space-between;
+        width: 400px;
+        align-items: center;
+    }
+
+    .content .personal .option div a{
+        text-decoration: none;
+        color:black;
+    }
+    .content .personal .option div a:hover{
+        color:blue;
+    }
+    .content .function{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        margin-top: 50px;
+    }
+
+    .content .function div{
+        width: 250px;
+        height: 150px;
+        border-radius: 5px;
+        border: 1px solid #d9dddc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .content .function div a{
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color:black;
+        text-align: center;
+        line-height: 150px;
+    }
+
+    .content .function div a:hover{
+        background-color: #f1f3f4;
+    }
+</style>
+</html>

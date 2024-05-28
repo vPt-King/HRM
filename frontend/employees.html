@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="personal">
+            <div class="information">
+                <div class="name" id="name">Xin chào </div>
+                <div class="position" id="position"></div>
+            </div>
+            <div class="option">
+                <div class="homepage"><a href="homepage.html">Trang chủ</a></div>
+                <div class="record"><a href="record.html">Xem hồ sơ</a></div>
+                <div class="change_password"><a href="#">Thay đổi mật khẩu</a></div>
+                <div class="sign_out"><a href="login.html">Thoát</a></div>
+            </div>
+        </div>
+
+        <div id="add" style="display: none;"><a href="addEmployees.html">Thêm nhân viên</a></div>
+        <div id="filter"></div>
+
+        <div class="show_employees">
+            <ul id="show_employees_detail">
+                
+            </ul>
+        </div>
+        
+    </div>
+</body>
+<script>
+    function handleClick(event)
+    {
+        const id_employee = parseInt(event.target.id)
+        let data = {
+            id: id_employee
+        }
+        fetch('http://localhost:3000/api/employee',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+        })
+        .then((res) => {
+                return res.json()
+        })
+        .then(employee => {
+            const tmp_employee = employee[0];
+            console.log(tmp_employee)
+            localStorage.setItem('tmp_employee', JSON.stringify(tmp_employee))
+            window.location.href="http://127.0.0.1:5500/frontend/editEmployee.html"
+        })
+    }
+    function employees()
+    {
+        let user = JSON.parse(localStorage.getItem('user'));
+        document.getElementById('name').innerHTML += user.name;
+        document.getElementById('position').innerHTML += user.position_name;
+        if(user.position_id == '1' || user.position_id == '2'|| user.department_id == '1' || user.department_id == '6')
+        {
+            document.getElementById('add').style.display = 'block';
+        }
+        fetch('http://localhost:3000/api/employees')
+        .then((res) => {
+                return res.json()
+            })
+            .then((data) => {
+                const show = document.getElementById("show_employees_detail");
+                const employees = {
+                    length: data.length,
+                    data
+                }
+                localStorage.setItem("employees", JSON.stringify(employees));
+
+                console.log(employees)
+                show.innerHTML = '';
+                data.forEach(e => {
+                    if(user.position_id == '3' && user.department_id == e.department_id && user.id != e.id || user.position_id == '1' || user.position_id == '2'|| user.department_id == '1' || user.department_id == '6'){
+                        show.innerHTML += `<li>
+                        <div class="show">
+                            <div class="show1">
+                                <strong>${e.name} - ${e.title}</strong>
+                                <p>Phòng ban: ${e.department_name}</p>
+                            </div>
+                            <div class="show2">
+        
+                                <p>Điện thoại: ${e.phone}</p>
+                                <p>Email: ${e.email}</p>
+                            </div>
+                        </div>
+                        
+    
+                        <div class="button">
+                            <button id="${e.id}" onclick="handleClick(event)">Chỉnh sửa nhân viên</button>
+                            <button>Xóa nhân viên</button>
+                        </div>
+                    </li>`
+                    }
+                    else{
+                        show.innerHTML += `<li>
+                    <div class="show">
+                        <div class="show1">
+                            <strong>${e.name} - ${e.position_name} ${e.department_name}</strong>
+                            <p>Phòng ban: Giám đốc</p>
+                        </div>
+                        <div class="show2">
+    
+                            <p>Điện thoại: ${e.phone}</p>
+                            <p>Email: ${e.email}</p>
+                        </div>
+                    </div>
+                </li>`
+                }
+                });
+            })
+    }
+    employees()
+</script>
+<style>
+    #add{
+        display: flex;
+        margin-top: 20px;
+        justify-content: right;
+    }
+    #add a{
+        display: block;
+        text-decoration: none;
+        text-align: right;
+    }
+    .content{
+        margin-left: 150px;
+        margin-right: 150px; 
+    }
+    .content .personal{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #d9dddc;
+        padding-bottom: 10px;
+    }
+    .content .personal .option{
+        display: flex;
+        justify-content: space-between;
+        width: 300px;
+        align-items: center;
+    }
+
+    .content .personal .option div a{
+        text-decoration: none;
+        color:black;
+    }
+    .content .personal .option div a:hover{
+        color:blue;
+    }
+    .show_employees{
+        margin-top: 30px;
+    }
+    .show_employees ul{
+        list-style: none;
+
+    }
+
+    .show_employees ul li{
+        border-bottom: 1px solid #d9dddc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .show_employees ul li .show{
+        width: 700px;
+        display: flex;
+    }
+    .show_employees ul li p{
+        margin: 0;
+    }
+    .show .show1{
+        width: 400px;
+    }
+    .show .show2{
+        
+    }
+    .show:hover{
+        background-color: #d9dddc;
+    }
+</style>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="login">
+        <div class="title">
+            <h3>LOGIN</h3>
+        </div>
+        <div class="error" id="error"></div>
+        <div class="form">
+            <form>
+                <div class="username">
+                    <label>Username: </label>
+                    <input type="text" id="username">
+                </div>
+                <div class="password">
+                    <label>Mật khẩu: </label>
+                    <input type="password" id="password">
+                </div>
+            </form>
+            <button onclick="login()">Đăng nhập</button>
+        </div>
+    </div>
+</body> 
+<script>
+    localStorage.setItem('user','');
+    function login()
+    {
+        document.getElementById('error').innerHTML = '';
+        let username = document.getElementById('username').value.trim();
+        let password = document.getElementById('password').value.trim();
+        if(username === '' || password === '')
+        {
+            document.getElementById('error').innerHTML = "Bạn không được bỏ trống username hoặc password";
+        }else{
+            let data = {
+                username, password
+            }
+            fetch('http://localhost:3000/api/login',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then((data) => {
+                let ok = data.ok;
+                if(ok == false)
+                {
+                    document.getElementById('error').innerHTML = 'Tài khoản sai thông tin đăng nhập';
+                }
+                else{
+                    localStorage.setItem('user', JSON.stringify(data.infor));
+                    window.location.href = 'http://127.0.0.1:5500/frontend/homepage.html'
+                }
+            })
+        }
+    }
+</script>
+<style>
+body{
+    height: 400px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.login{
+    height: 250px;
+    width: 300px;
+    border: 1px solid #d9dddc;
+}
+.title{
+    text-align: center;
+}
+label{
+    display:inline-block;
+    width: 150px;
+    margin-top: 15px;
+}
+button{
+    margin-top: 15px;
+    margin-left: 100px;
+}
+input{
+    width: 250px;
+}
+.form{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.error{
+    color:red;
+    margin-left: 10px;
+}
+</style>
+</html>

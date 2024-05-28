@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="personal">
+            <div class="information">
+                <div class="name" id="name">Xin chào </div>
+                <div class="position" id="position"></div>
+            </div>
+            <div class="option">
+                <div class="homepage"><a href="homepage.html">Trang chủ</a></div>
+                <div class="record"><a href="record.html">Xem hồ sơ</a></div>
+                <div class="change_password"><a href="#">Thay đổi mật khẩu</a></div>
+                <div class="sign_out"><a href="login.html">Thoát</a></div>
+            </div>
+        </div>
+
+        
+        <div class="show" id="show">
+            <div class="show_work">
+                <!-- <div class="date"></div>
+                <div class="checkin"></div>
+                <div class="checkout"></div> -->
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function homepage()
+    {
+        let user = JSON.parse(localStorage.getItem('user'));
+        document.getElementById('name').innerHTML += user.name;
+        document.getElementById('position').innerHTML += user.position_name;
+        let data = {
+            id:user.id
+        }
+        fetch('http://localhost:3000/api/show-created-work',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then(res=>{
+                const show = document.getElementById('show');
+                show.innerHTML += `<div class="show_work">
+                                            <div class="date">Thời gian</div>
+                                            <div class="checkin">Chấm công vào</div>
+                                            <div class="checkout">Chấm công ra</div>
+                                            <div class="checkout">Thời gian làm việc</div>
+                                        </div>`
+                   res.forEach(work => {
+                    show.innerHTML += `<div class="show_work">
+                                            <div class="date">${work.date}</div>
+                                            <div class="checkin">${work.checkin || 'Chưa chấm công'}</div>
+                                            <div class="checkout">${work.checkout || 'Chưa chấm công'}</div>
+                                            <div class="checkout">${work.minutes || 0}</div>
+                                        </div>`
+                })
+            })
+    }
+    
+    homepage()
+</script>
+<style>
+    .content{
+        margin-left: 150px;
+        margin-right: 150px; 
+    }
+    .content .personal{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #d9dddc;
+        padding-bottom: 10px;
+    }
+    .content .personal .option{
+        display: flex;
+        justify-content: space-between;
+        width: 400px;
+        align-items: center;
+    }
+
+    .content .personal .option div a{
+        text-decoration: none;
+        color:black;
+    }
+    .content .personal .option div a:hover{
+        color:blue;
+    }
+
+    
+    .content .show{
+        margin-top: 50px;
+    }
+
+    .content .show_work{
+        margin: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .content .show_work div{
+        width: 300px;
+    }
+</style>
+</html>
