@@ -39,6 +39,7 @@
             
             <div class="departments"><a href="#">Phòng ban</a></div>
             <div class="" id="create_work"><a href="createWork.html">Tạo công</a></div>
+            <div class="" id="hire"><a href="hire.html">Tuyển dụng</a></div>
         </div>
     </div>
 </body>
@@ -54,6 +55,11 @@
             
             document.getElementById("create_work").style.display="none";
             document.getElementById("verify_appoinment").style.display="none";
+        }
+
+        if(user.department_id_user != "16" && user.department_id_user != "1" && user.department_id_user != "6")
+        {
+            document.getElementById("hire").style.display="none";
         }
     }
     function handleWork()

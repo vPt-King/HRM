@@ -39,7 +39,7 @@ app.use(cors(corsOptions)) // Use this after the variable declaration
 app.post('/api/login', (req,res)=>{
     const username = req.body.username;
     const password = req.body.password;
-    const query = `SELECT users.id as id, users.name as name, users.email as email, users.CCCD as CCCD, users.phone as phone, users.dob as dob, users.certificate as certificate, users.onboard as onboard, users.salary as salary, position.name as position_name,position.id as position_id, department.name as department_name, department.user_name as management_name,department.id as department_id,department.id_user as department_id_user, company.name as company_name FROM users, department, position, company where users.username = '${username}' and users.password = '${password}' and users.id_position = position.id and users.id_department = department.id and users.id_company = company.id;`;
+    const query = `SELECT users.id as id, users.name as name, users.email as email, users.CCCD as CCCD, users.phone as phone, users.dob as dob, users.certificate as certificate, users.onboard as onboard, users.salary as salary, users.active as active, position.name as position_name,position.id as position_id, department.name as department_name, department.user_name as management_name,department.id as department_id,department.id_user as department_id_user, company.name as company_name FROM users, department, position, company where users.username = '${username}' and users.password = '${password}' and users.id_position = position.id and users.id_department = department.id and users.id_company = company.id;`;
     const data = {
       ok:false,
       infor:{}
@@ -51,9 +51,12 @@ app.post('/api/login', (req,res)=>{
       }
       if(results.length != 0)
       {
-        data['ok'] = true
-        data['infor'] = results[0]
-
+        console.log(results[0])
+        if(results[0].active == 1)
+        {
+            data['ok'] = true
+            data['infor'] = results[0]
+        }
       }
       return res.send(JSON.stringify(data));
     });
@@ -83,7 +86,7 @@ app.post('/api/add-employees', (req,res)=>{
 })
 
 app.get('/api/employees',(req,res)=>{
-    const query = 'SELECT users.id as id, users.name as name, users.email as email, users.CCCD as CCCD, users.phone as phone, users.dob as dob, users.certificate as certificate, users.onboard as onboard, users.salary as salary, position.name as position_name, position.id as position_id ,department.name as department_name, department.user_name as management_name,users.title as title, department.id as department_id ,company.name as company_name FROM users, department, position, company where users.id_position = position.id and users.id_department = department.id and users.id_company = company.id;';
+    const query = 'SELECT users.id as id, users.name as name, users.email as email, users.CCCD as CCCD, users.phone as phone, users.dob as dob, users.certificate as certificate, users.onboard as onboard, users.salary as salary, position.name as position_name, position.id as position_id ,department.name as department_name, department.user_name as management_name,users.title as title, users.active as active, department.id as department_id ,company.name as company_name FROM users, department, position, company where users.id_position = position.id and users.id_department = department.id and users.id_company = company.id;';
     connection.query(query, (err, results) => {
       if (err) {
         console.error('Error querying database:', err);
@@ -118,6 +121,21 @@ app.post('/api/update-employee',(req,res)=>{
       return;
     }
     return res.send(JSON.stringify('cập nhật thành công'));
+  });
+})
+
+app.post('/api/active-employee',(req,res)=>{
+  const id = parseInt(req.body.id)
+  const active = parseInt(req.body.active)
+  var setActive = 0
+  if(active == 0) setActive = 1
+  const query = "UPDATE `hrm`.`users` SET `active` = " +  `'${setActive}' ` + "WHERE (`id` = '" + `${id}');`
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error querying database:', err);
+      return res.send("cập nhật nhân viên không thành công");
+    }
+    return res.send(JSON.stringify('Cập nhật nhân viên thành công'));
   });
 })
 

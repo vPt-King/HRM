@@ -33,6 +33,26 @@
     </div>
 </body>
 <script>
+    function handleActive(event)
+    {
+        const id_employee = parseInt(event.target.id.split("-")[0])
+        const active = parseInt(event.target.id.split("-")[1])
+        let data = {
+            id: id_employee,active
+        }
+        fetch('http://localhost:3000/api/active-employee',{
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+        })
+        .then((res) => {
+                return res.json()
+        })
+        .then(data => {
+            alert(data)
+            window.location.reload()
+        })
+    }
     function handleClick(event)
     {
         const id_employee = parseInt(event.target.id)
@@ -79,25 +99,49 @@
                 show.innerHTML = '';
                 data.forEach(e => {
                     if(user.position_id == '3' && user.department_id == e.department_id && user.id != e.id || user.position_id == '1' || user.position_id == '2'|| user.department_id == '1' || user.department_id == '6'){
-                        show.innerHTML += `<li>
-                        <div class="show">
-                            <div class="show1">
-                                <strong>${e.name} - ${e.title}</strong>
-                                <p>Phòng ban: ${e.department_name}</p>
+                        if(e.active == 1)
+                        {
+                            show.innerHTML += `<li>
+                            <div class="show">
+                                <div class="show1">
+                                    <strong>${e.name} - ${e.title}</strong>
+                                    <p>Phòng ban: ${e.department_name}</p>
+                                </div>
+                                <div class="show2">
+            
+                                    <p>Điện thoại: ${e.phone}</p>
+                                    <p>Email: ${e.email}</p>
+                                </div>
                             </div>
-                            <div class="show2">
+                            
         
-                                <p>Điện thoại: ${e.phone}</p>
-                                <p>Email: ${e.email}</p>
+                            <div class="button">
+                                <button id="${e.id}" onclick="handleClick(event)">Chỉnh sửa nhân viên</button>
+                                <button id="${e.id}-${e.active}" onclick="handleActive(event)">Disable</button>
                             </div>
-                        </div>
-                        
-    
-                        <div class="button">
-                            <button id="${e.id}" onclick="handleClick(event)">Chỉnh sửa nhân viên</button>
-                            <button>Xóa nhân viên</button>
-                        </div>
-                    </li>`
+                        </li>`
+                        }
+                        else{
+                            show.innerHTML += `<li>
+                            <div class="show">
+                                <div class="show1">
+                                    <strong>${e.name} - ${e.title}</strong>
+                                    <p>Phòng ban: ${e.department_name}</p>
+                                </div>
+                                <div class="show2">
+            
+                                    <p>Điện thoại: ${e.phone}</p>
+                                    <p>Email: ${e.email}</p>
+                                </div>
+                            </div>
+                            
+        
+                            <div class="button">
+                                <button id="${e.id}" onclick="handleClick(event)">Chỉnh sửa nhân viên</button>
+                                <button id="${e.id}-${e.active}" onclick="handleActive(event)">Enable</button>
+                            </div>
+                        </li>`
+                        }
                     }
                     else{
                         show.innerHTML += `<li>
